@@ -26,7 +26,7 @@ const fetchPokemon = async () => {
 
     try {
         const res = await axios.get('/api/random-pokemon');
-        pokemon.value = res.data;
+        pokemon.value = res.data.data;
     } catch {
         error.value = 'Failed to load Pokémon';
     } finally {
@@ -98,13 +98,16 @@ const fetchPokemon = async () => {
                     >
                         <div
                             v-if="pokemon"
-                            class="flex flex-col items-center justify-center text-white"
+                            class="z-10 flex flex-col items-center justify-center rounded-xl border-2 border-white p-4 text-white capitalize drop-shadow-sm drop-shadow-white transition delay-150 duration-300 ease-in-out hover:scale-110 hover:drop-shadow-xl/70 dark:bg-[#0a0a0a]"
                         >
                             <h2>{{ pokemon.name }}</h2>
-                            <img :src="pokemon.image" alt="pokemon" />
-                            <p>Types: {{ pokemon.types.join(', ') }}</p>
-                            <p>Height: {{ pokemon.height }}</p>
-                            <p>Weight: {{ pokemon.weight }}</p>
+                            <img
+                                class="h-48 w-48"
+                                :src="pokemon.image"
+                                alt="pokemon"
+                            />
+                            <p>{{ pokemon.types.join(', ') }}</p>
+                            <p>{{ pokemon.rarity }}</p>
                         </div>
                         <div class="h-full w-full" v-else>
                             <div
@@ -121,12 +124,16 @@ const fetchPokemon = async () => {
                             />
                         </div>
                     </div>
+
                     <Button
                         class="cursor-pointer"
-                        :disabled="!$page.props.auth.user"
+                        :disabled="!$page.props.auth.user || loading"
                         @click="fetchPokemon"
                         >Resgatar</Button
                     >
+                    <div class="text-sm text-primary" :hidden="!loading">
+                        Buscando pokemon...
+                    </div>
                     <div
                         class="text-sm text-primary/20"
                         :hidden="!!$page.props.auth.user"
