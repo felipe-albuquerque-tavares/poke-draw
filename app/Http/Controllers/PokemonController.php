@@ -2,21 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Http;
-use App\Models\Pokemon;
 use App\Enums\PokemonRarity;
 use App\Enums\PokemonType;
 use App\Http\Resources\PokemonResource;
-
+use App\Models\Pokemon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class PokemonController extends Controller
 {
-
     public function random()
     {
-        $user = Auth::user(); 
-        if (!$user) {
+        $user = Auth::user();
+        if (! $user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -32,17 +30,16 @@ class PokemonController extends Controller
         $data = $response->json();
 
         $baseStatTotal = array_reduce($data['stats'], function ($carry, $item) {
-            return $carry + $item['base_stat']; 
-        },0);
-
+            return $carry + $item['base_stat'];
+        }, 0);
 
         $types = collect($data['types'])
-        ->pluck('type.name')
-        ->map(fn ($type) => PokemonType::from($type)->value)
-        ->values()
-        ->toArray();
+            ->pluck('type.name')
+            ->map(fn ($type) => PokemonType::from($type)->value)
+            ->values()
+            ->toArray();
         $pokemon = Pokemon::updateOrCreate(
-            ['id' => $data['id']], 
+            ['id' => $data['id']],
             [
                 'name' => $data['name'],
                 'types' => $types,
@@ -57,9 +54,16 @@ class PokemonController extends Controller
 
     private function determineRarity(int $baseStatTotal): PokemonRarity
     {
-        if ($baseStatTotal >= 600) return PokemonRarity::Legendary;
-        if ($baseStatTotal >= 500) return PokemonRarity::Rare;
-        if ($baseStatTotal >= 400) return PokemonRarity::Uncommon;
+        if ($baseStatTotal >= 600) {
+            return PokemonRarity::Legendary;
+        }
+        if ($baseStatTotal >= 500) {
+            return PokemonRarity::Rare;
+        }
+        if ($baseStatTotal >= 400) {
+            return PokemonRarity::Uncommon;
+        }
+
         return PokemonRarity::Common;
     }
 }

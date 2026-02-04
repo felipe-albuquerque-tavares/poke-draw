@@ -11,23 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-            Schema::create('pokemon_user', function (Blueprint $table) {
-                $table->id();
+        Schema::create('pokemon_user', function (Blueprint $table) {
+            $table->id();
 
-                $table->foreignId('user_id')
-                    ->constrained()
-                    ->cascadeOnDelete();
+            $table->foreignId('user_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
-                $table->foreignId('pokemon_id')
-                    ->constrained('pokemons')
-                    ->cascadeOnDelete();
+            $table->foreignId('pokemon_id')
+                ->constrained('pokemons')
+                ->cascadeOnDelete();
 
-                $table->timestamps();
+            $table->timestamps();
 
-                // Prevent duplicate relations
-                $table->unique(['user_id', 'pokemon_id']);
-            });
-        }
+            // Prevent duplicate relations
+            $table->unique(['user_id', 'pokemon_id']);
+        });
+    }
+
     /**
      * Reverse the migrations.
      */

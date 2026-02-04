@@ -9,13 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up(): void
+    public function up(): void
     {
-    Schema::table('pokemon_user', function (Blueprint $table) {
-        $table->dropUnique('pokemon_user_user_id_pokemon_id_unique');
-    });
+        Schema::table('pokemon_user', function (Blueprint $table) {
+            $table->dropUnique('pokemon_user_user_id_pokemon_id_unique');
+        });
     }
-    
+
     /**
      * Reverse the migrations.
      */
