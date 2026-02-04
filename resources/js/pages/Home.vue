@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { Sparkles, Gift } from 'lucide-vue-next';
+import { Gift } from 'lucide-vue-next';
+import AppLogo from '@/components/AppLogo.vue';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { dashboard, login, register } from '@/routes';
-import AppLogo from '@/components/AppLogo.vue';
 withDefaults(
     defineProps<{
         canRegister: boolean;
