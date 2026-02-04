@@ -86,8 +86,8 @@
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
         ],
         "ci": [
-            "composer run test:lint",
             "composer run lint",
+            "composer run test:lint",
             "npm run lint",
             "npm run build"
         ]
