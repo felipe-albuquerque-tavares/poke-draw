@@ -7,15 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pokemon extends Model
 {
+    protected $table = 'pokemons';
+
     protected $fillable = [
         'name',
         'types',
-        'rarity' => PokemonRarity::class,
-        'image_url',
+        'rarity',       
+        'image',
         'description',
     ];
 
     protected $casts = [
         'types' => 'array',
+        'rarity' => PokemonRarity::class, 
     ];
 }
