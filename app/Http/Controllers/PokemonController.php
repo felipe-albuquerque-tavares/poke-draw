@@ -8,10 +8,18 @@ use App\Enums\PokemonRarity;
 use App\Enums\PokemonType;
 use App\Http\Resources\PokemonResource;
 
+use Illuminate\Support\Facades\Auth;
+
 class PokemonController extends Controller
 {
+
     public function random()
     {
+        $user = Auth::user(); 
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
         $randomId = rand(1, 1025);
 
         $response = Http::get("https://pokeapi.co/api/v2/pokemon/{$randomId}");
@@ -33,7 +41,6 @@ class PokemonController extends Controller
         ->map(fn ($type) => PokemonType::from($type)->value)
         ->values()
         ->toArray();
-        print_r($this->determineRarity($baseStatTotal));
         $pokemon = Pokemon::updateOrCreate(
             ['id' => $data['id']], 
             [
@@ -43,6 +50,7 @@ class PokemonController extends Controller
                 'image' => $data['sprites']['front_default'],
             ]
         );
+        $user->pokemons()->attach([$pokemon->id]);
 
         return new PokemonResource($pokemon);
     }

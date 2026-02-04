@@ -3,4 +3,4 @@
 use App\Http\Controllers\PokemonController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/random-pokemon', [PokemonController::class, 'random']);
+Route::middleware(['web', 'auth'])->get('/random-pokemon', [PokemonController::class, 'random']);
