@@ -79,11 +79,17 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi",
-            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php -r \"file_exists('database/database.pgsql') || touch('database/database.pgsql');\"",
             "@php artisan migrate --graceful --ansi"
         ],
         "pre-package-uninstall": [
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ],
+        "ci": [
+            "composer run test",
+            "composer run lint",
+            "npm run lint",
+            "npm run build"
         ]
     },
     "extra": {
