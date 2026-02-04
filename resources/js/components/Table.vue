@@ -44,7 +44,7 @@ td {
 }
 </style>
 
-<script setup>
+<script lang="ts" setup>
 defineProps({
     headers: {
         type: Array,

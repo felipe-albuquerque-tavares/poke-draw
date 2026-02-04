@@ -22,13 +22,13 @@ class Pokemon extends Model
         'rarity' => PokemonRarity::class,
     ];
 
-     public function users()
+    public function users()
     {
         return $this->belongsToMany(
             User::class,
-            'pokemon_user',  
-            'pokemon_id',     
-            'user_id'      
+            'pokemon_user',
+            'pokemon_id',
+            'user_id'
         );
     }
 }

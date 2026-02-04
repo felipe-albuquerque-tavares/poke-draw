@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
+import axios from 'axios';
+import { ref, onMounted } from 'vue';
+import PokemonList from '@/components/PokemonList.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
-import PokemonList from '@/components/PokemonList.vue';
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,7 +21,7 @@ onMounted(async () => {
     try {
         const response = await axios.get('/api/pokemons');
         pokemons.value = response.data;
-    } catch (err) {
+    } catch {
         error.value = 'Failed to load pokemons';
     } finally {
         loading.value = false;

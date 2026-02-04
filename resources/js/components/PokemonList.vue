@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import TableComponent from '@/components/Table.vue';
 
 defineProps({

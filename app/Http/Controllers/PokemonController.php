@@ -11,19 +11,18 @@ use Illuminate\Support\Facades\Http;
 
 class PokemonController extends Controller
 {
-
-
     public function index()
     {
         $user = Auth::user();
-        if (!$user) {
+        if (! $user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
         return response()->json(
-        Pokemon::whereHas('users', function ($q) use ($user) {
-            $q->where('users.id', $user->id);
-        })->get()
-    );
+            Pokemon::whereHas('users', function ($q) use ($user) {
+                $q->where('users.id', $user->id);
+            })->get()
+        );
     }
 
     public function random()
@@ -66,7 +65,6 @@ class PokemonController extends Controller
 
         return new PokemonResource($pokemon);
     }
-
 
     private function determineRarity(int $baseStatTotal): PokemonRarity
     {
