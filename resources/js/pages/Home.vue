@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import { dashboard, login, register } from '@/routes';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Sparkles, Gift } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { dashboard, login, register } from '@/routes';
 import AppLogo from '@/components/AppLogo.vue';
 withDefaults(
     defineProps<{
@@ -16,7 +16,7 @@ withDefaults(
 </script>
 
 <template>
-    <Head title="Welcome">
+    <Head title="Home">
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
@@ -94,6 +94,12 @@ withDefaults(
                         :disabled="!$page.props.auth.user"
                         >Resgatar</Button
                     >
+                    <div
+                        class="text-sm text-primary/20"
+                        :hidden="!$page.props.auth.user"
+                    >
+                        É necessario se registrar para resgatar
+                    </div>
                 </div>
             </main>
         </div>
