@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import axios from 'axios';
 import { Gift } from 'lucide-vue-next';
+import { ref } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,6 +15,24 @@ withDefaults(
         canRegister: true,
     },
 );
+
+const pokemon = ref();
+const loading = ref(false);
+const error = ref();
+
+const fetchPokemon = async () => {
+    loading.value = true;
+    error.value = '';
+
+    try {
+        const res = await axios.get('/api/random-pokemon');
+        pokemon.value = res.data;
+    } catch {
+        error.value = 'Failed to load Pokémon';
+    } finally {
+        loading.value = false;
+    }
+};
 </script>
 
 <template>
@@ -77,26 +97,39 @@ withDefaults(
                         class="relative h-[330px] w-full"
                     >
                         <div
-                            class="absolute flex h-full w-full flex-col items-center justify-center gap-2 text-white"
+                            v-if="pokemon"
+                            class="flex flex-col items-center justify-center text-white"
                         >
-                            <Gift
-                                class="h-20 w-20 animate-bounce ease-in-out"
-                            />
-                            O seu pokemon te espera...
+                            <h2>{{ pokemon.name }}</h2>
+                            <img :src="pokemon.image" alt="pokemon" />
+                            <p>Types: {{ pokemon.types.join(', ') }}</p>
+                            <p>Height: {{ pokemon.height }}</p>
+                            <p>Weight: {{ pokemon.weight }}</p>
                         </div>
-                        <Skeleton
-                            class="h-full w-full flex-1"
-                            data-sidebar="menu-skeleton-text"
-                        />
+                        <div class="h-full w-full" v-else>
+                            <div
+                                class="absolute flex h-full w-full flex-col items-center justify-center gap-2 text-white"
+                            >
+                                <Gift
+                                    class="h-20 w-20 animate-bounce ease-in-out"
+                                />
+                                O seu pokemon te espera...
+                            </div>
+                            <Skeleton
+                                class="h-full w-full flex-1"
+                                data-sidebar="menu-skeleton-text"
+                            />
+                        </div>
                     </div>
                     <Button
                         class="cursor-pointer"
                         :disabled="!$page.props.auth.user"
+                        @click="fetchPokemon"
                         >Resgatar</Button
                     >
                     <div
                         class="text-sm text-primary/20"
-                        :hidden="!$page.props.auth.user"
+                        :hidden="!!$page.props.auth.user"
                     >
                         É necessario se registrar para resgatar
                     </div>
