@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PokemonRarity;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Pokemon extends Model
@@ -21,4 +22,10 @@ class Pokemon extends Model
         'types' => 'array',
         'rarity' => PokemonRarity::class, 
     ];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class)
+            ->withTimestamps();
+    }
 }
