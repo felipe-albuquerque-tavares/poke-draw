@@ -52,7 +52,11 @@ class User extends Authenticatable
 
     public function pokemons()
     {
-        return $this->belongsToMany(Pokemon::class)
-            ->withTimestamps();
+        return $this->belongsToMany(
+            Pokemon::class,
+            'pokemon_user',
+            'user_id',
+            'pokemon_id'
+        );
     }
 }
