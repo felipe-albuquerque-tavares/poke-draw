@@ -1,80 +1,82 @@
 <script setup lang="ts">
-import { ChevronDown } from 'lucide-vue-next'
+import { ChevronDown, Check } from 'lucide-vue-next'
 import { ComboboxAnchor, ComboboxContent, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxItemIndicator, ComboboxLabel, ComboboxRoot, ComboboxSeparator, ComboboxTrigger, ComboboxViewport } from 'reka-ui'
-
 
 export type OptionNode = {
   name: string;
   children?: OptionNode[];
 };
 
-
-defineProps<{
+const props = defineProps<{
   modelValue: string
   options: OptionNode[]
   loading?: boolean
 }>()
 
 defineEmits(['update:modelValue'])
-
 </script>
 
 <template>
   <ComboboxRoot
     class="relative"
+    :model-value="modelValue"
+    @update:model-value="$emit('update:modelValue', $event)"
   >
     <ComboboxAnchor class="min-w-[160px] inline-flex items-center justify-between rounded-lg border px-[15px] text-xs leading-none h-[35px] gap-[5px] dark:bg-input/30 text-grass11 hover:bg-stone-50 shadow-sm focus:shadow-[0_0_0_2px] focus:shadow-black data-[placeholder]:text-grass9 outline-none">
       <ComboboxInput
-        class="!bg-transparent outline-none text-grass11 h-full selection:bg-grass5 placeholder-stone-400"
+        class="!bg-transparent outline-none text-grass11 h-full selection:bg-grass5 placeholder-stone-400 flex-1"
         placeholder="Search..."
-        @input="$emit('update:modelValue', $event.target.value)"
+        :model-value="modelValue"
+        @update:model-value="$emit('update:modelValue', $event)"
       />
       <ComboboxTrigger>
-        <ChevronDown
-          icon="radix-icons:chevron-down"
-          class="h-4 w-4 text-grass11"
-        />
+        <ChevronDown class="h-4 w-4 text-grass11" />
       </ComboboxTrigger>
     </ComboboxAnchor>
 
-    <ComboboxContent class="absolute z-10 w-full mt-1 min-w-[160px] dark:bg-input/30 overflow-hidden rounded-lg shadow-sm border will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade">
+    <ComboboxContent class="absolute z-10 w-full mt-1 min-w-[160px] dark:bg-input/30 bg-white overflow-hidden rounded-lg shadow-sm border will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade">
       <ComboboxViewport class="p-[5px]">
-        <ComboboxEmpty class="text-mauve8 text-xs font-medium text-center py-2" />
-          <div  v-if="options.length">
-            <template
-              v-for="(group, index) in options"
-              :key="group.name"
-            >
-              <ComboboxGroup>
-                <ComboboxSeparator
-                  v-if="index !== 0"
-                  class="h-[1px] bg-grass6 m-[5px]"
-                />
+        <ComboboxEmpty class="text-mauve8 text-xs font-medium text-center py-2">
+          No results found
+        </ComboboxEmpty>
+        
+        <div v-if="loading" class="text-mauve8 text-xs font-medium text-center py-2">
+          Loading...
+        </div>
+        
+        <div v-else-if="options.length">
+          <template
+            v-for="(group, index) in options"
+            :key="group.name"
+          >
+            <ComboboxGroup>
+              <ComboboxSeparator
+                v-if="index !== 0"
+                class="h-[1px] bg-grass6 m-[5px]"
+              />
 
-                <ComboboxLabel class="px-[25px] text-xs leading-[25px] text-mauve11">
-                  {{ group.name }}
-                </ComboboxLabel>
+              <ComboboxLabel class="px-[25px] text-xs leading-[25px] text-mauve11">
+                {{ group.name }}
+              </ComboboxLabel>
 
-                <ComboboxItem
-                  v-for="option in group.children"
-                  :key="option.name"
-                  :value="option.name"
-                    @click="$emit('update:modelValue', option.name)"
-                  class="text-xs leading-none text-grass11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-grass9 data-[highlighted]:text-grass1"
+              <ComboboxItem
+                v-for="option in group.children"
+                :key="option.name"
+                :value="option.name"
+                class="text-xs leading-none text-grass11 rounded-[3px] flex items-center h-[25px] pr-[35px] pl-[25px] relative select-none data-[disabled]:text-mauve8 data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-grass9 data-[highlighted]:text-grass1 cursor-pointer"
+              >
+                <ComboboxItemIndicator
+                  class="absolute left-0 w-[25px] inline-flex items-center justify-center"
                 >
-                  <ComboboxItemIndicator
-                    class="absolute left-0 w-[25px] inline-flex items-center justify-center"
-                  >
-                    <Icon icon="radix-icons:check" />
-                  </ComboboxItemIndicator>
-                  <span>
-                    {{ option.name }}
-                  </span>
-                </ComboboxItem>
-              </ComboboxGroup>
-            </template>
-          </div>
-        <div v-if="loading">Loading...</div>
+                  <Check class="h-4 w-4" />
+                </ComboboxItemIndicator>
+                <span>
+                  {{ option.name }}
+                </span>
+              </ComboboxItem>
+            </ComboboxGroup>
+          </template>
+        </div>
       </ComboboxViewport>
     </ComboboxContent>
   </ComboboxRoot>
