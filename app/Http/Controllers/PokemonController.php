@@ -2,27 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Data\PokemonData;
 use App\Enums\PokemonRarity;
 use App\Enums\PokemonType;
 use App\Http\Resources\PokemonResource;
 use App\Models\Pokemon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class PokemonController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         if (! $user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return response()->json(
-            Pokemon::whereHas('users', function ($q) use ($user) {
-                $q->where('users.id', $user->id);
-            })->get()
-        );
+        $pokemons = Pokemon::whereHas('users', function ($q) use ($user) {
+            $q->where('users.id', $user->id);
+        })
+            ->when($request->filled('name'), function ($q) use ($request) {
+                $q->where('name', 'LIKE', '%'.$request->query('name').'%');
+            })
+            ->get()
+            ->map(function ($pokemon) {
+                return new PokemonData(
+                    id: $pokemon->id,
+                    name: $pokemon->name,
+                    types: array_map(fn ($t) => PokemonType::from($t), $pokemon->types),
+                    rarity: $pokemon->rarity,
+                    image: $pokemon->image,
+                    created_at: $pokemon->created_at->toISOString(),
+                    updated_at: $pokemon->updated_at->toISOString(),
+                );
+            });
+
+        return response()->json($pokemons);
     }
 
     public function random()

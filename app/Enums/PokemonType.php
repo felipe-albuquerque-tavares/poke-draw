@@ -2,6 +2,9 @@
 
 namespace App\Enums;
 
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
+
+#[TypeScript]
 enum PokemonType: string
 {
     case Normal = 'normal';
