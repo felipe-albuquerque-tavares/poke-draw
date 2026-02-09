@@ -15,13 +15,19 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    lable: {
+    label: {
         type: String,
         required: false,
     },
+    modelValue: {
+        type: String,
+        default: '',
+    },
 });
 
-const search = ref('');
+const emit = defineEmits(['update:modelValue']);
+
+const search = ref(props.modelValue);
 const options = ref<OptionNode[]>([]);
 const loading = ref(false);
 const error = ref<string | null>(null);
@@ -42,9 +48,17 @@ const fetchOptions = async (value: string) => {
             },
         });
 
-        options.value = response.data;
-    } catch {
-        error.value = 'Failed to load';
+        options.value = [
+            {
+                name: '',
+                children: response.data.map((item: any) => ({
+                    name: item[props.field],
+                })),
+            },
+        ];
+    } catch (err) {
+        error.value = 'Failed to load options';
+        console.error('Error fetching options:', err);
     } finally {
         loading.value = false;
     }
@@ -54,11 +68,24 @@ const debouncedFetch = useDebounceFn(fetchOptions, 300);
 
 watch(search, (value) => {
     debouncedFetch(value);
+    emit('update:modelValue', value);
 });
+
+watch(
+    () => props.modelValue,
+    (value) => {
+        if (value !== search.value) {
+            search.value = value;
+        }
+    },
+);
 </script>
+
 <template>
     <div class="flex flex-col gap-2">
-        <Label for="field" class="font-bold capitalize">{{ lable }}</Label>
+        <Label v-if="label" class="font-bold capitalize">
+            {{ label }}
+        </Label>
         <Combobox v-model="search" :options="options" :loading="loading" />
         <span v-if="error" class="text-sm text-red-500">
             {{ error }}
