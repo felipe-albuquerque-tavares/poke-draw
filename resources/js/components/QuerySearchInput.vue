@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { useDebounceFn } from '@vueuse/core';
-import { Combobox, OptionNode } from '@/components/ui/combobox';
-import { ref, watch } from 'vue';
 import axios from 'axios';
+import { ref, watch } from 'vue';
+import type { OptionNode } from '@/components/ui/combobox';
+import { Combobox } from '@/components/ui/combobox';
+import { Label } from '@/components/ui/label';
 
 const props = defineProps({
     route: {
